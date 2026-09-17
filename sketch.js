@@ -250,6 +250,7 @@ function touchMoved(){
 function touchEnded(){
     if (bird.release()) {
         playWhoosh();
+        hasEverLaunched = true;
     }
     return false;
 }
