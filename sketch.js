@@ -8,9 +8,14 @@ let box1, box2, box3, box4, box5;
 let pig1, pig3;
 let log1, log3, log4, log5;
 let bird;
+let sprites = {};
 
 function preload() {
     backgroundImg = loadImage("sprites/bg.png");
+    sprites.bird = loadImage("sprites/bird.png");
+    sprites.wood1 = loadImage("sprites/wood1.png");
+    sprites.wood2 = loadImage("sprites/wood2.png");
+    sprites.enemy = loadImage("sprites/enemy.png");
 }
 
 function setup(){
