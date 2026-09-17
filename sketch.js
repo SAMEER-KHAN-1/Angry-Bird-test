@@ -9,6 +9,8 @@ let pig1, pig3;
 let log1, log3, log4, log5;
 let bird;
 let sprites = {};
+let pigs = [];
+const PIG_KILL_IMPACT = 4;
 
 function preload() {
     backgroundImg = loadImage("sprites/bg.png");
@@ -42,6 +44,29 @@ function setup(){
     log5 = new Log(870,120,150, -PI/7);
 
     bird = new Bird(100,100);
+
+    pigs = [pig1, pig3];
+
+    Matter.Events.on(engine, 'collisionStart', handleCollisions);
+}
+
+function handleCollisions(event){
+    for (var pair of event.pairs) {
+        var relVel = Matter.Vector.sub(pair.bodyA.velocity, pair.bodyB.velocity);
+        var impact = Matter.Vector.magnitude(relVel);
+        if (impact > PIG_KILL_IMPACT) {
+            killIfPig(pair.bodyA);
+            killIfPig(pair.bodyB);
+        }
+    }
+}
+
+function killIfPig(body){
+    for (var p of pigs) {
+        if (p.body === body) {
+            p.remove();
+        }
+    }
 }
 
 function draw(){
