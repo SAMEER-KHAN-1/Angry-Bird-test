@@ -1,20 +1,22 @@
 const Engine = Matter.Engine;
-const World= Matter.World;
+const World = Matter.World;
 const Bodies = Matter.Bodies;
 
-var engine, world;
-var box1, pig1;
-var backgroundImg,platform;
+let engine, world;
+let backgroundImg, ground, platform;
+let box1, box2, box3, box4, box5;
+let pig1, pig3;
+let log1, log3, log4, log5;
+let bird;
 
 function preload() {
     backgroundImg = loadImage("sprites/bg.png");
 }
 
 function setup(){
-    var canvas = createCanvas(1200,400);
+    createCanvas(1200,400);
     engine = Engine.create();
     world = engine.world;
-
 
     ground = new Ground(600,height,1200,20);
     platform = new Ground(150, 310, 300, 170);
@@ -35,15 +37,12 @@ function setup(){
     log5 = new Log(870,120,150, -PI/7);
 
     bird = new Bird(100,100);
-
 }
 
 function draw(){
     background(backgroundImg);
     Engine.update(engine);
-    console.log(box2.body.position.x);
-    console.log(box2.body.position.y);
-    console.log(box2.body.angle);
+
     box1.display();
     box2.display();
     ground.display();
