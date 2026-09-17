@@ -12,7 +12,13 @@ let sprites = {};
 let pigs = [];
 let birdsRemaining = 5;
 let gameOver = false;
+let score = 0;
+let highScore = 0;
+let bonusAwarded = false;
+let hasEverLaunched = false;
 const PIG_KILL_IMPACT = 4;
+const POINTS_PER_PIG = 100;
+const POINTS_PER_LEFTOVER_BIRD = 50;
 
 let popOsc, popEnv;
 let whooshNoise, whooshEnv;
@@ -47,6 +53,8 @@ function setup(){
     whooshNoise.amp(whooshEnv);
     whooshNoise.start();
 
+    highScore = getItem('highScore') || 0;
+
     buildLevel();
 }
 
@@ -62,6 +70,8 @@ function buildLevel(){
     World.clear(world, false);
     birdsRemaining = 5;
     gameOver = false;
+    score = 0;
+    bonusAwarded = false;
 
     ground = new Ground(600,height,1200,20);
     platform = new Ground(150, 310, 300, 170);
@@ -102,7 +112,16 @@ function killIfPig(body){
         if (p.body === body && p.alive) {
             p.remove();
             playPop();
+            addScore(POINTS_PER_PIG);
         }
+    }
+}
+
+function addScore(points){
+    score += points;
+    if (score > highScore) {
+        highScore = score;
+        storeItem('highScore', highScore);
     }
 }
 
@@ -130,10 +149,29 @@ function draw(){
 
     checkBirdStatus();
     drawHUD();
+    drawHint();
+}
+
+function drawHint(){
+    if (hasEverLaunched) return;
+    push();
+    noStroke();
+    fill(255);
+    textSize(18);
+    textAlign(CENTER, TOP);
+    text("Drag the bird back and release to launch!", width / 2, 15);
+    pop();
 }
 
 function checkBirdStatus(){
-    if (gameOver || pigsRemaining() === 0) return;
+    if (pigsRemaining() === 0) {
+        if (!bonusAwarded) {
+            bonusAwarded = true;
+            addScore(birdsRemaining * POINTS_PER_LEFTOVER_BIRD);
+        }
+        return;
+    }
+    if (gameOver) return;
     if (bird.launched && (bird.isOffscreen() || bird.isResting())) {
         World.remove(world, bird.body);
         birdsRemaining--;
@@ -157,6 +195,7 @@ function drawHUD(){
     textAlign(LEFT, TOP);
     text("Pigs remaining: " + pigsRemaining(), 20, 15);
     text("Birds left: " + birdsRemaining, 20, 40);
+    text("Score: " + score + "  (Best: " + highScore + ")", 20, 65);
     if (pigsRemaining() === 0) {
         textAlign(CENTER, CENTER);
         textSize(48);
@@ -194,6 +233,7 @@ function mouseDragged(){
 function mouseReleased(){
     if (bird.release()) {
         playWhoosh();
+        hasEverLaunched = true;
     }
 }
 
