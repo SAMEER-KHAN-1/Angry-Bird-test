@@ -1,4 +1,16 @@
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  background: #1a1a1a;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
