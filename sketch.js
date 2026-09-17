@@ -14,6 +14,9 @@ let birdsRemaining = 5;
 let gameOver = false;
 const PIG_KILL_IMPACT = 4;
 
+let popOsc, popEnv;
+let whooshNoise, whooshEnv;
+
 function preload() {
     backgroundImg = loadImage("sprites/bg.png");
     sprites.bird = loadImage("sprites/bird.png");
@@ -29,7 +32,30 @@ function setup(){
 
     Matter.Events.on(engine, 'collisionStart', handleCollisions);
 
+    popOsc = new p5.Oscillator('sine');
+    popEnv = new p5.Envelope();
+    popEnv.setADSR(0.001, 0.1, 0, 0.05);
+    popEnv.setRange(0.4, 0);
+    popOsc.amp(popEnv);
+    popOsc.start();
+    popOsc.freq(700);
+
+    whooshNoise = new p5.Noise('white');
+    whooshEnv = new p5.Envelope();
+    whooshEnv.setADSR(0.01, 0.15, 0, 0.05);
+    whooshEnv.setRange(0.2, 0);
+    whooshNoise.amp(whooshEnv);
+    whooshNoise.start();
+
     buildLevel();
+}
+
+function playPop(){
+    popEnv.play(popOsc);
+}
+
+function playWhoosh(){
+    whooshEnv.play(whooshNoise);
 }
 
 function buildLevel(){
@@ -73,8 +99,9 @@ function handleCollisions(event){
 
 function killIfPig(body){
     for (var p of pigs) {
-        if (p.body === body) {
+        if (p.body === body && p.alive) {
             p.remove();
+            playPop();
         }
     }
 }
@@ -165,5 +192,7 @@ function mouseDragged(){
 }
 
 function mouseReleased(){
-    bird.release();
+    if (bird.release()) {
+        playWhoosh();
+    }
 }

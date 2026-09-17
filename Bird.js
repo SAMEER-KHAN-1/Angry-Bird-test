@@ -29,18 +29,19 @@ class Bird extends BaseClass {
   }
 
   release() {
-    if (!this.dragging) return;
+    if (!this.dragging) return false;
     this.dragging = false;
     var pos = this.body.position;
     if (dist(pos.x, pos.y, this.anchorX, this.anchorY) < 10) {
       Matter.Body.setPosition(this.body, {x: this.anchorX, y: this.anchorY});
-      return;
+      return false;
     }
     this.launched = true;
     Matter.Body.setStatic(this.body, false);
     var vx = (this.anchorX - pos.x) * this.launchPower;
     var vy = (this.anchorY - pos.y) * this.launchPower;
     Matter.Body.setVelocity(this.body, {x: vx, y: vy});
+    return true;
   }
 
   isOffscreen() {
