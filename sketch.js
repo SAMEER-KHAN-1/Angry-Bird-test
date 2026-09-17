@@ -10,6 +10,8 @@ let log1, log3, log4, log5;
 let bird;
 let sprites = {};
 let pigs = [];
+let birdsRemaining = 5;
+let gameOver = false;
 const PIG_KILL_IMPACT = 4;
 
 function preload() {
@@ -91,7 +93,21 @@ function draw(){
     bird.display();
     platform.display();
 
+    checkBirdStatus();
     drawHUD();
+}
+
+function checkBirdStatus(){
+    if (gameOver || pigsRemaining() === 0) return;
+    if (bird.launched && (bird.isOffscreen() || bird.isResting())) {
+        World.remove(world, bird.body);
+        birdsRemaining--;
+        if (birdsRemaining > 0) {
+            bird = new Bird(100, 100);
+        } else {
+            gameOver = true;
+        }
+    }
 }
 
 function pigsRemaining(){
@@ -105,11 +121,17 @@ function drawHUD(){
     textSize(20);
     textAlign(LEFT, TOP);
     text("Pigs remaining: " + pigsRemaining(), 20, 15);
+    text("Birds left: " + birdsRemaining, 20, 40);
     if (pigsRemaining() === 0) {
         textAlign(CENTER, CENTER);
         textSize(48);
         fill(255, 215, 0);
         text("LEVEL CLEARED!", width / 2, height / 2);
+    } else if (gameOver) {
+        textAlign(CENTER, CENTER);
+        textSize(48);
+        fill(220, 40, 40);
+        text("GAME OVER", width / 2, height / 2);
     }
     pop();
 }
