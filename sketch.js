@@ -90,6 +90,28 @@ function draw(){
 
     bird.display();
     platform.display();
+
+    drawHUD();
+}
+
+function pigsRemaining(){
+    return pigs.filter(function(p){ return p.alive; }).length;
+}
+
+function drawHUD(){
+    push();
+    noStroke();
+    fill(255);
+    textSize(20);
+    textAlign(LEFT, TOP);
+    text("Pigs remaining: " + pigsRemaining(), 20, 15);
+    if (pigsRemaining() === 0) {
+        textAlign(CENTER, CENTER);
+        textSize(48);
+        fill(255, 215, 0);
+        text("LEVEL CLEARED!", width / 2, height / 2);
+    }
+    pop();
 }
 
 function mousePressed(){
