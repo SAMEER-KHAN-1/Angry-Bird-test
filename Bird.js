@@ -37,6 +37,7 @@ class Bird extends BaseClass {
       return false;
     }
     this.launched = true;
+    this.launchFrame = frameCount;
     Matter.Body.setStatic(this.body, false);
     var vx = (this.anchorX - pos.x) * this.launchPower;
     var vy = (this.anchorY - pos.y) * this.launchPower;
@@ -51,7 +52,10 @@ class Bird extends BaseClass {
 
   isResting() {
     if (!this.launched) return false;
-    return Matter.Vector.magnitude(this.body.velocity) < 0.05;
+    // Matter.js resting-contact jitter can keep velocity hovering just
+    // above threshold forever, so force settle after a few seconds too.
+    var timedOut = frameCount - this.launchFrame > 300;
+    return Matter.Vector.magnitude(this.body.velocity) < 0.05 || timedOut;
   }
 
   drawSling() {
