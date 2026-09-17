@@ -27,6 +27,16 @@ function setup(){
     engine = Engine.create();
     world = engine.world;
 
+    Matter.Events.on(engine, 'collisionStart', handleCollisions);
+
+    buildLevel();
+}
+
+function buildLevel(){
+    World.clear(world, false);
+    birdsRemaining = 5;
+    gameOver = false;
+
     ground = new Ground(600,height,1200,20);
     platform = new Ground(150, 310, 300, 170);
 
@@ -48,8 +58,6 @@ function setup(){
     bird = new Bird(100,100);
 
     pigs = [pig1, pig3];
-
-    Matter.Events.on(engine, 'collisionStart', handleCollisions);
 }
 
 function handleCollisions(event){
@@ -127,13 +135,25 @@ function drawHUD(){
         textSize(48);
         fill(255, 215, 0);
         text("LEVEL CLEARED!", width / 2, height / 2);
+        textSize(20);
+        fill(255);
+        text("Press R to restart", width / 2, height / 2 + 40);
     } else if (gameOver) {
         textAlign(CENTER, CENTER);
         textSize(48);
         fill(220, 40, 40);
         text("GAME OVER", width / 2, height / 2);
+        textSize(20);
+        fill(255);
+        text("Press R to restart", width / 2, height / 2 + 40);
     }
     pop();
+}
+
+function keyPressed(){
+    if ((key === 'r' || key === 'R') && (gameOver || pigsRemaining() === 0)) {
+        buildLevel();
+    }
 }
 
 function mousePressed(){
