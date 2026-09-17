@@ -196,3 +196,20 @@ function mouseReleased(){
         playWhoosh();
     }
 }
+
+function touchStarted(){
+    bird.tryGrab(mouseX, mouseY);
+    return false;
+}
+
+function touchMoved(){
+    bird.updateDrag(mouseX, mouseY);
+    return false;
+}
+
+function touchEnded(){
+    if (bird.release()) {
+        playWhoosh();
+    }
+    return false;
+}
