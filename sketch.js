@@ -66,3 +66,15 @@ function draw(){
     bird.display();
     platform.display();
 }
+
+function mousePressed(){
+    bird.tryGrab(mouseX, mouseY);
+}
+
+function mouseDragged(){
+    bird.updateDrag(mouseX, mouseY);
+}
+
+function mouseReleased(){
+    bird.release();
+}
