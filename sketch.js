@@ -18,6 +18,7 @@ let highScore = 0;
 let bonusAwarded = false;
 let hasEverLaunched = false;
 let muted = false;
+let newBest = false;
 const PIG_KILL_IMPACT = 4;
 const POINTS_PER_PIG = 100;
 const POINTS_PER_LEFTOVER_BIRD = 50;
@@ -89,6 +90,7 @@ function buildLevel(){
     gameOver = false;
     score = 0;
     bonusAwarded = false;
+    newBest = false;
 
     ground = new Ground(600,height,1200,20,sprites.base);
     platform = new Ground(150, 310, 300, 170, sprites.ground);
@@ -137,6 +139,7 @@ function killIfPig(body){
 function addScore(points){
     score += points;
     if (score > highScore) {
+        if (highScore > 0) newBest = true;
         highScore = score;
         storeItem('highScore', highScore);
     }
@@ -216,6 +219,11 @@ function drawHUD(){
     text("Pigs remaining: " + pigsRemaining(), 20, 15);
     text("Birds left: " + birdsRemaining, 20, 40);
     text("Score: " + score + "  (Best: " + highScore + ")", 20, 65);
+    if (newBest) {
+        fill(255, 215, 0);
+        text("New best!", 20, 90);
+        fill(255);
+    }
     textAlign(RIGHT, TOP);
     text("Sound: " + (muted ? "off" : "on") + " (M)", width - 20, 15);
     textAlign(LEFT, TOP);
