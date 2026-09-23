@@ -300,7 +300,10 @@ function updateRestartButton(show){
         return;
     }
     var rect = cnv.elt.getBoundingClientRect();
-    restartButton.position(rect.left + width / 2 - 45, rect.top + height / 2 + 55);
+    restartButton.position(
+        rect.left + window.pageXOffset + width / 2 - 45,
+        rect.top + window.pageYOffset + height / 2 + 55
+    );
     restartButton.show();
 }
 
