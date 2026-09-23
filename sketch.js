@@ -17,6 +17,7 @@ let score = 0;
 let highScore = 0;
 let bonusAwarded = false;
 let hasEverLaunched = false;
+let muted = false;
 const PIG_KILL_IMPACT = 4;
 const POINTS_PER_PIG = 100;
 const POINTS_PER_LEFTOVER_BIRD = 50;
@@ -62,8 +63,16 @@ function setup(){
     whooshNoise.start();
 
     highScore = getItem('highScore') || 0;
+    muted = getItem('muted') === true;
+    masterVolume(muted ? 0 : 1);
 
     buildLevel();
+}
+
+function toggleMute(){
+    muted = !muted;
+    masterVolume(muted ? 0 : 1);
+    storeItem('muted', muted);
 }
 
 function playPop(){
@@ -204,6 +213,9 @@ function drawHUD(){
     text("Pigs remaining: " + pigsRemaining(), 20, 15);
     text("Birds left: " + birdsRemaining, 20, 40);
     text("Score: " + score + "  (Best: " + highScore + ")", 20, 65);
+    textAlign(RIGHT, TOP);
+    text("Sound: " + (muted ? "off" : "on") + " (M)", width - 20, 15);
+    textAlign(LEFT, TOP);
     if (pigsRemaining() === 0) {
         textAlign(CENTER, CENTER);
         textSize(48);
@@ -241,6 +253,9 @@ function updateRestartButton(show){
 function keyPressed(){
     if ((key === 'r' || key === 'R') && (gameOver || pigsRemaining() === 0)) {
         buildLevel();
+    }
+    if (key === 'm' || key === 'M') {
+        toggleMute();
     }
 }
 
