@@ -306,17 +306,24 @@ function mouseReleased(){
     }
 }
 
-function touchStarted(){
+function touchedCanvas(event){
+    return !event || event.target === cnv.elt;
+}
+
+function touchStarted(event){
+    if (!touchedCanvas(event)) return true;
     bird.tryGrab(mouseX, mouseY);
     return false;
 }
 
-function touchMoved(){
+function touchMoved(event){
+    if (!touchedCanvas(event)) return true;
     bird.updateDrag(mouseX, mouseY);
     return false;
 }
 
-function touchEnded(){
+function touchEnded(event){
+    if (!touchedCanvas(event)) return true;
     if (bird.release()) {
         playWhoosh();
         hasEverLaunched = true;
