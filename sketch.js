@@ -82,6 +82,13 @@ function setup(){
     buildLevel();
 }
 
+function unlockAudio(){
+    var ctx = getAudioContext();
+    if (ctx.state === 'suspended') {
+        ctx.resume();
+    }
+}
+
 function toggleMute(){
     muted = !muted;
     masterVolume(muted ? 0 : 1);
@@ -283,6 +290,7 @@ function updateRestartButton(show){
 }
 
 function keyPressed(){
+    unlockAudio();
     if ((key === 'r' || key === 'R') && (gameOver || pigsRemaining() === 0)) {
         buildLevel();
     }
@@ -292,6 +300,7 @@ function keyPressed(){
 }
 
 function mousePressed(){
+    unlockAudio();
     bird.tryGrab(mouseX, mouseY);
 }
 
@@ -311,6 +320,7 @@ function touchedCanvas(event){
 }
 
 function touchStarted(event){
+    unlockAudio();
     if (!touchedCanvas(event)) return true;
     bird.tryGrab(mouseX, mouseY);
     return false;
