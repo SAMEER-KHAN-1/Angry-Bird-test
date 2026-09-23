@@ -76,11 +76,25 @@ function setup(){
     thudOsc.start();
     thudOsc.freq(90);
 
-    highScore = getItem('highScore') || 0;
-    muted = getItem('muted') === true;
+    highScore = Number(loadSetting('highScore')) || 0;
+    muted = loadSetting('muted') === 'true';
     masterVolume(muted ? 0 : 1);
 
     buildLevel();
+}
+
+function loadSetting(key){
+    try {
+        return window.localStorage.getItem(key);
+    } catch (e) {
+        return null;
+    }
+}
+
+function saveSetting(key, value){
+    try {
+        window.localStorage.setItem(key, String(value));
+    } catch (e) {}
 }
 
 function unlockAudio(){
@@ -93,7 +107,7 @@ function unlockAudio(){
 function toggleMute(){
     muted = !muted;
     masterVolume(muted ? 0 : 1);
-    storeItem('muted', muted);
+    saveSetting('muted', muted);
 }
 
 function playPop(){
@@ -170,7 +184,7 @@ function addScore(points){
     if (score > highScore) {
         if (highScore > 0) newBest = true;
         highScore = score;
-        storeItem('highScore', highScore);
+        saveSetting('highScore', highScore);
     }
 }
 
