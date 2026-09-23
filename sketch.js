@@ -29,6 +29,8 @@ function preload() {
     sprites.wood1 = loadImage("sprites/wood1.png");
     sprites.wood2 = loadImage("sprites/wood2.png");
     sprites.enemy = loadImage("sprites/enemy.png");
+    sprites.base = loadImage("sprites/base.png");
+    sprites.ground = loadImage("sprites/ground.png");
 }
 
 function setup(){
@@ -73,8 +75,8 @@ function buildLevel(){
     score = 0;
     bonusAwarded = false;
 
-    ground = new Ground(600,height,1200,20);
-    platform = new Ground(150, 310, 300, 170);
+    ground = new Ground(600,height,1200,20,sprites.base);
+    platform = new Ground(150, 310, 300, 170, sprites.ground);
 
     box1 = new Box(700,320,70,70);
     box2 = new Box(920,320,70,70);
