@@ -14,3 +14,17 @@ body {
 canvas {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
+
+.restart-btn {
+  padding: 8px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  background: #ffd700;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.restart-btn:hover {
+  background: #ffe14d;
+}

@@ -3,6 +3,7 @@ const World = Matter.World;
 const Bodies = Matter.Bodies;
 
 let engine, world;
+let cnv, restartButton;
 let backgroundImg, ground, platform;
 let box1, box2, box3, box4, box5;
 let pig1, pig3;
@@ -34,11 +35,16 @@ function preload() {
 }
 
 function setup(){
-    createCanvas(1200,400);
+    cnv = createCanvas(1200,400);
     engine = Engine.create();
     world = engine.world;
 
     Matter.Events.on(engine, 'collisionStart', handleCollisions);
+
+    restartButton = createButton('Restart');
+    restartButton.class('restart-btn');
+    restartButton.mousePressed(buildLevel);
+    restartButton.hide();
 
     popOsc = new p5.Oscillator('sine');
     popEnv = new p5.Envelope();
@@ -205,7 +211,8 @@ function drawHUD(){
         text("LEVEL CLEARED!", width / 2, height / 2);
         textSize(20);
         fill(255);
-        text("Press R to restart", width / 2, height / 2 + 40);
+        text("Press R or tap Restart", width / 2, height / 2 + 40);
+        updateRestartButton(true);
     } else if (gameOver) {
         textAlign(CENTER, CENTER);
         textSize(48);
@@ -213,9 +220,22 @@ function drawHUD(){
         text("GAME OVER", width / 2, height / 2);
         textSize(20);
         fill(255);
-        text("Press R to restart", width / 2, height / 2 + 40);
+        text("Press R or tap Restart", width / 2, height / 2 + 40);
+        updateRestartButton(true);
+    } else {
+        updateRestartButton(false);
     }
     pop();
+}
+
+function updateRestartButton(show){
+    if (!show) {
+        restartButton.hide();
+        return;
+    }
+    var rect = cnv.elt.getBoundingClientRect();
+    restartButton.position(rect.left + width / 2 - 45, rect.top + height / 2 + 55);
+    restartButton.show();
 }
 
 function keyPressed(){
