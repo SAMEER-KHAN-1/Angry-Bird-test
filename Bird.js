@@ -7,11 +7,12 @@ class Bird extends BaseClass {
     this.launchPower = 0.18;
     this.dragging = false;
     this.launched = false;
+    this.removed = false;
     Matter.Body.setStatic(this.body, true);
   }
 
   tryGrab(mx, my) {
-    if (this.launched) return;
+    if (this.launched || this.removed) return;
     var d = dist(mx, my, this.body.position.x, this.body.position.y);
     if (d < 40) {
       this.dragging = true;
@@ -29,7 +30,7 @@ class Bird extends BaseClass {
   }
 
   release() {
-    if (!this.dragging) return false;
+    if (!this.dragging || this.removed) return false;
     this.dragging = false;
     var pos = this.body.position;
     if (dist(pos.x, pos.y, this.anchorX, this.anchorY) < 10) {
@@ -43,6 +44,12 @@ class Bird extends BaseClass {
     var vy = (this.anchorY - pos.y) * this.launchPower;
     Matter.Body.setVelocity(this.body, {x: vx, y: vy});
     return true;
+  }
+
+  removeFromWorld() {
+    if (this.removed) return;
+    this.removed = true;
+    World.remove(world, this.body);
   }
 
   isOffscreen() {
@@ -70,6 +77,7 @@ class Bird extends BaseClass {
   }
 
   display() {
+    if (this.removed) return;
     this.drawSling();
     super.display();
   }

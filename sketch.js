@@ -173,7 +173,7 @@ function checkBirdStatus(){
     }
     if (gameOver) return;
     if (bird.launched && (bird.isOffscreen() || bird.isResting())) {
-        World.remove(world, bird.body);
+        bird.removeFromWorld();
         birdsRemaining--;
         if (birdsRemaining > 0) {
             bird = new Bird(100, 100);
