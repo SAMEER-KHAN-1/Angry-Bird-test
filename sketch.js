@@ -25,6 +25,10 @@ const POINTS_PER_LEFTOVER_BIRD = 50;
 
 let popOsc, popEnv;
 let whooshNoise, whooshEnv;
+let thudOsc, thudEnv;
+let lastThudFrame = 0;
+const THUD_IMPACT = 3;
+const THUD_COOLDOWN_FRAMES = 6;
 
 function preload() {
     backgroundImg = loadImage("sprites/bg.png");
@@ -63,6 +67,14 @@ function setup(){
     whooshNoise.amp(whooshEnv);
     whooshNoise.start();
 
+    thudOsc = new p5.Oscillator('sine');
+    thudEnv = new p5.Envelope();
+    thudEnv.setADSR(0.001, 0.08, 0, 0.05);
+    thudEnv.setRange(0.3, 0);
+    thudOsc.amp(thudEnv);
+    thudOsc.start();
+    thudOsc.freq(90);
+
     highScore = getItem('highScore') || 0;
     muted = getItem('muted') === true;
     masterVolume(muted ? 0 : 1);
@@ -78,6 +90,12 @@ function toggleMute(){
 
 function playPop(){
     popEnv.play(popOsc);
+}
+
+function playThud(){
+    if (frameCount - lastThudFrame < THUD_COOLDOWN_FRAMES) return;
+    lastThudFrame = frameCount;
+    thudEnv.play(thudOsc);
 }
 
 function playWhoosh(){
@@ -119,6 +137,9 @@ function handleCollisions(event){
     for (var pair of event.pairs) {
         var relVel = Matter.Vector.sub(pair.bodyA.velocity, pair.bodyB.velocity);
         var impact = Matter.Vector.magnitude(relVel);
+        if (hasEverLaunched && impact > THUD_IMPACT) {
+            playThud();
+        }
         if (impact > PIG_KILL_IMPACT) {
             killIfPig(pair.bodyA);
             killIfPig(pair.bodyB);
