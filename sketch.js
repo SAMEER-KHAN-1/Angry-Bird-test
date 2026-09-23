@@ -42,6 +42,7 @@ function preload() {
 
 function setup(){
     cnv = createCanvas(1200,400);
+    frameRate(60);
     engine = Engine.create();
     world = engine.world;
 
