@@ -185,6 +185,9 @@ function checkBirdStatus(){
         if (!bonusAwarded) {
             bonusAwarded = true;
             addScore(birdsRemaining * POINTS_PER_LEFTOVER_BIRD);
+            if (bird.launched && !bird.removed) {
+                Matter.Body.setStatic(bird.body, true);
+            }
         }
         return;
     }
