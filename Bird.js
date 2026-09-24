@@ -11,10 +11,10 @@ class Bird extends BaseClass {
     Matter.Body.setStatic(this.body, true);
   }
 
-  tryGrab(mx, my) {
+  tryGrab(mx, my, radius) {
     if (this.launched || this.removed) return;
     var d = dist(mx, my, this.body.position.x, this.body.position.y);
-    if (d < 40) {
+    if (d < (radius || 40)) {
       this.dragging = true;
     }
   }

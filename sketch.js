@@ -19,6 +19,7 @@ let bonusAwarded = false;
 let hasEverLaunched = false;
 let muted = false;
 let newBest = false;
+const TOUCH_GRAB_RADIUS = 70;
 const PIG_KILL_IMPACT = 4;
 const POINTS_PER_PIG = 100;
 const POINTS_PER_LEFTOVER_BIRD = 50;
@@ -340,7 +341,7 @@ function touchedCanvas(event){
 function touchStarted(event){
     unlockAudio();
     if (!touchedCanvas(event)) return true;
-    bird.tryGrab(mouseX, mouseY);
+    bird.tryGrab(mouseX, mouseY, TOUCH_GRAB_RADIUS);
     return false;
 }
 
