@@ -219,7 +219,8 @@ function draw(){
 function drawHint(){
     if (hasEverLaunched) return;
     push();
-    noStroke();
+    stroke(0, 180);
+    strokeWeight(3);
     fill(255);
     textSize(18);
     textAlign(CENTER, TOP);
@@ -256,7 +257,8 @@ function pigsRemaining(){
 
 function drawHUD(){
     push();
-    noStroke();
+    stroke(0, 180);
+    strokeWeight(3);
     fill(255);
     textSize(20);
     textAlign(LEFT, TOP);
