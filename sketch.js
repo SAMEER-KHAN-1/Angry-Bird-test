@@ -316,7 +316,7 @@ function checkBirdStatus(){
     if (pigsRemaining() === 0) {
         if (!bonusAwarded) {
             bonusAwarded = true;
-            addScore(birdsRemaining * POINTS_PER_LEFTOVER_BIRD);
+            addScore(unusedBirds() * POINTS_PER_LEFTOVER_BIRD);
             if (bird.launched && !bird.removed) {
                 Matter.Body.setStatic(bird.body, true);
             }
@@ -333,6 +333,10 @@ function checkBirdStatus(){
             gameOver = true;
         }
     }
+}
+
+function unusedBirds(){
+    return birdsRemaining - (bird.launched ? 1 : 0);
 }
 
 function pigsRemaining(){
