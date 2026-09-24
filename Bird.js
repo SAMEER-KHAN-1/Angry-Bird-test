@@ -82,8 +82,35 @@ class Bird extends BaseClass {
     pop();
   }
 
+  drawTrajectory() {
+    if (!this.dragging) return;
+    var pos = this.body.position;
+    var vx = (this.anchorX - pos.x) * this.launchPower;
+    var vy = (this.anchorY - pos.y) * this.launchPower;
+    var dt = 1000 / 60;
+    var g = world.gravity.y * world.gravity.scale * dt * dt;
+    var airFriction = 1 - this.body.frictionAir;
+    var x = pos.x;
+    var y = pos.y;
+    push();
+    noStroke();
+    for (var step = 1; step <= 60; step++) {
+      vx *= airFriction;
+      vy = vy * airFriction + g;
+      x += vx;
+      y += vy;
+      if (y > height) break;
+      if (step % 3 === 0) {
+        fill(255, 255 - step * 3.5);
+        ellipse(x, y, 6, 6);
+      }
+    }
+    pop();
+  }
+
   display() {
     if (this.removed) return;
+    this.drawTrajectory();
     this.drawSling();
     super.display();
   }
