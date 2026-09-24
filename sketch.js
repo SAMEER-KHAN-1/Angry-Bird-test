@@ -259,6 +259,7 @@ function draw(){
     log4.display();
     log5.display();
 
+    drawSlingshot();
     bird.display();
     platform.display();
 
@@ -269,6 +270,18 @@ function draw(){
     drawHUD();
     drawHint();
     if (paused) drawPauseOverlay();
+}
+
+function drawSlingshot(){
+    push();
+    stroke(101, 67, 33);
+    strokeCap(ROUND);
+    strokeWeight(12);
+    line(100, 230, 100, 145);
+    strokeWeight(9);
+    line(100, 145, 85, 60);
+    line(100, 145, 115, 60);
+    pop();
 }
 
 function drawPauseOverlay(){
