@@ -19,6 +19,7 @@ let bonusAwarded = false;
 let hasEverLaunched = false;
 let muted = false;
 let newBest = false;
+let particles = [];
 let paused = false;
 let pauseStartFrame = 0;
 const TOUCH_GRAB_RADIUS = 70;
@@ -145,6 +146,7 @@ function buildLevel(){
     score = 0;
     bonusAwarded = false;
     newBest = false;
+    particles = [];
 
     ground = new Ground(600,height,1200,20,sprites.base);
     platform = new Ground(150, 310, 300, 170, sprites.ground);
@@ -186,11 +188,47 @@ function handleCollisions(event){
 function killIfPig(body){
     for (var p of pigs) {
         if (p.body === body && p.alive) {
+            spawnPopEffect(p.body.position.x, p.body.position.y);
             p.remove();
             playPop();
             addScore(POINTS_PER_PIG);
         }
     }
+}
+
+function spawnPopEffect(x, y){
+    for (var i = 0; i < 14; i++) {
+        var angle = random(TWO_PI);
+        var speed = random(1, 4);
+        particles.push({
+            x: x,
+            y: y,
+            vx: cos(angle) * speed,
+            vy: sin(angle) * speed - 1,
+            life: 30,
+            size: random(4, 9)
+        });
+    }
+}
+
+function updateParticles(){
+    for (var pt of particles) {
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.vy += 0.15;
+        pt.life--;
+    }
+    particles = particles.filter(function(pt){ return pt.life > 0; });
+}
+
+function drawParticles(){
+    push();
+    noStroke();
+    for (var pt of particles) {
+        fill(140, 220, 90, 255 * pt.life / 30);
+        ellipse(pt.x, pt.y, pt.size, pt.size);
+    }
+    pop();
 }
 
 function addScore(points){
@@ -223,6 +261,9 @@ function draw(){
 
     bird.display();
     platform.display();
+
+    if (!paused) updateParticles();
+    drawParticles();
 
     if (!paused) checkBirdStatus();
     drawHUD();
