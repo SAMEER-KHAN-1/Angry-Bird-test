@@ -13,6 +13,10 @@ body {
 
 canvas {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .restart-btn {
