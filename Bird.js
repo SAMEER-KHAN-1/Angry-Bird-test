@@ -8,6 +8,7 @@ class Bird extends BaseClass {
     this.dragging = false;
     this.launched = false;
     this.removed = false;
+    this.trail = [];
     Matter.Body.setStatic(this.body, true);
   }
 
@@ -108,8 +109,24 @@ class Bird extends BaseClass {
     pop();
   }
 
+  drawTrail() {
+    if (this.launched && !this.body.isStatic && !paused && frameCount % 3 === 0) {
+      this.trail.push({x: this.body.position.x, y: this.body.position.y});
+      if (this.trail.length > 18) this.trail.shift();
+    }
+    push();
+    noStroke();
+    for (var i = 0; i < this.trail.length; i++) {
+      var t = (i + 1) / this.trail.length;
+      fill(255, 255 * t * 0.6);
+      ellipse(this.trail[i].x, this.trail[i].y, 4 + 6 * t, 4 + 6 * t);
+    }
+    pop();
+  }
+
   display() {
     if (this.removed) return;
+    this.drawTrail();
     this.drawTrajectory();
     this.drawSling();
     super.display();
