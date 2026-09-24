@@ -347,7 +347,12 @@ function drawHUD(){
     textSize(20);
     textAlign(LEFT, TOP);
     text("Pigs remaining: " + pigsRemaining(), 20, 15);
-    text("Birds left: " + birdsRemaining, 20, 40);
+    text("Birds left:", 20, 40);
+    var iconX = 20 + textWidth("Birds left:") + 8;
+    imageMode(CORNER);
+    for (var i = 0; i < birdsRemaining; i++) {
+        image(sprites.bird, iconX + i * 26, 41, 22, 22);
+    }
     text("Score: " + score + "  (Best: " + highScore + ")", 20, 65);
     if (newBest) {
         fill(255, 215, 0);
