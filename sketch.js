@@ -419,9 +419,10 @@ function updateRestartButton(show){
         return;
     }
     var rect = cnv.elt.getBoundingClientRect();
+    var scale = rect.width / width;
     restartButton.position(
-        rect.left + window.pageXOffset + width / 2 - 45,
-        rect.top + window.pageYOffset + height / 2 + 55
+        rect.left + window.pageXOffset + rect.width / 2 - 45,
+        rect.top + window.pageYOffset + (height / 2 + 55) * scale
     );
     restartButton.show();
 }

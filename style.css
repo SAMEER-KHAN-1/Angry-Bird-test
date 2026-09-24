@@ -13,6 +13,8 @@ body {
 
 canvas {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  width: min(1200px, 100vw) !important;
+  height: auto !important;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
