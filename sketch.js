@@ -20,6 +20,7 @@ let hasEverLaunched = false;
 let muted = false;
 let newBest = false;
 let particles = [];
+let starsEarned = 0;
 let paused = false;
 let pauseStartFrame = 0;
 const TOUCH_GRAB_RADIUS = 70;
@@ -147,6 +148,7 @@ function buildLevel(){
     bonusAwarded = false;
     newBest = false;
     particles = [];
+    starsEarned = 0;
 
     ground = new Ground(600,height,1200,20,sprites.base);
     platform = new Ground(150, 310, 300, 170, sprites.ground);
@@ -316,7 +318,9 @@ function checkBirdStatus(){
     if (pigsRemaining() === 0) {
         if (!bonusAwarded) {
             bonusAwarded = true;
-            addScore(unusedBirds() * POINTS_PER_LEFTOVER_BIRD);
+            var unused = unusedBirds();
+            starsEarned = unused >= 3 ? 3 : (unused >= 1 ? 2 : 1);
+            addScore(unused * POINTS_PER_LEFTOVER_BIRD);
             if (bird.launched && !bird.removed) {
                 Matter.Body.setStatic(bird.body, true);
             }
@@ -368,6 +372,14 @@ function drawHUD(){
     text("Pause (P)", width - 20, 40);
     textAlign(LEFT, TOP);
     if (pigsRemaining() === 0) {
+        for (var s = 0; s < 3; s++) {
+            if (s < starsEarned) {
+                fill(255, 215, 0);
+            } else {
+                fill(90);
+            }
+            drawStar(width / 2 + (s - 1) * 70, height / 2 - 70, 13, 30);
+        }
         textAlign(CENTER, CENTER);
         textSize(48);
         fill(255, 215, 0);
@@ -389,6 +401,16 @@ function drawHUD(){
         updateRestartButton(false);
     }
     pop();
+}
+
+function drawStar(cx, cy, innerRadius, outerRadius){
+    beginShape();
+    for (var i = 0; i < 10; i++) {
+        var angle = -HALF_PI + i * PI / 5;
+        var r = i % 2 === 0 ? outerRadius : innerRadius;
+        vertex(cx + cos(angle) * r, cy + sin(angle) * r);
+    }
+    endShape(CLOSE);
 }
 
 function updateRestartButton(show){
