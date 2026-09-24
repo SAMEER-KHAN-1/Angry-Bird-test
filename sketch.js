@@ -19,6 +19,8 @@ let bonusAwarded = false;
 let hasEverLaunched = false;
 let muted = false;
 let newBest = false;
+let paused = false;
+let pauseStartFrame = 0;
 const TOUCH_GRAB_RADIUS = 70;
 const PIG_KILL_IMPACT = 4;
 const POINTS_PER_PIG = 100;
@@ -102,6 +104,17 @@ function unlockAudio(){
     var ctx = getAudioContext();
     if (ctx.state === 'suspended') {
         ctx.resume();
+    }
+}
+
+function togglePause(){
+    if (gameOver || pigsRemaining() === 0) return;
+    paused = !paused;
+    if (paused) {
+        pauseStartFrame = frameCount;
+        bird.cancelDrag();
+    } else if (bird.launched) {
+        bird.launchFrame += frameCount - pauseStartFrame;
     }
 }
 
@@ -191,7 +204,7 @@ function addScore(points){
 
 function draw(){
     background(backgroundImg);
-    Engine.update(engine);
+    if (!paused) Engine.update(engine);
 
     box1.display();
     box2.display();
@@ -211,9 +224,26 @@ function draw(){
     bird.display();
     platform.display();
 
-    checkBirdStatus();
+    if (!paused) checkBirdStatus();
     drawHUD();
     drawHint();
+    if (paused) drawPauseOverlay();
+}
+
+function drawPauseOverlay(){
+    push();
+    fill(0, 120);
+    noStroke();
+    rect(0, 0, width, height);
+    stroke(0, 180);
+    strokeWeight(3);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(48);
+    text("PAUSED", width / 2, height / 2);
+    textSize(20);
+    text("Press P to resume", width / 2, height / 2 + 40);
+    pop();
 }
 
 function drawHint(){
@@ -272,6 +302,7 @@ function drawHUD(){
     }
     textAlign(RIGHT, TOP);
     text("Sound: " + (muted ? "off" : "on") + " (M)", width - 20, 15);
+    text("Pause (P)", width - 20, 40);
     textAlign(LEFT, TOP);
     if (pigsRemaining() === 0) {
         textAlign(CENTER, CENTER);
@@ -318,18 +349,24 @@ function keyPressed(){
     if (key === 'm' || key === 'M') {
         toggleMute();
     }
+    if (key === 'p' || key === 'P') {
+        togglePause();
+    }
 }
 
 function mousePressed(){
     unlockAudio();
+    if (paused) return;
     bird.tryGrab(mouseX, mouseY);
 }
 
 function mouseDragged(){
+    if (paused) return;
     bird.updateDrag(mouseX, mouseY);
 }
 
 function mouseReleased(){
+    if (paused) return;
     if (bird.release()) {
         playWhoosh();
         hasEverLaunched = true;
@@ -343,18 +380,21 @@ function touchedCanvas(event){
 function touchStarted(event){
     unlockAudio();
     if (!touchedCanvas(event)) return true;
+    if (paused) return false;
     bird.tryGrab(mouseX, mouseY, TOUCH_GRAB_RADIUS);
     return false;
 }
 
 function touchMoved(event){
     if (!touchedCanvas(event)) return true;
+    if (paused) return false;
     bird.updateDrag(mouseX, mouseY);
     return false;
 }
 
 function touchEnded(event){
     if (!touchedCanvas(event)) return true;
+    if (paused) return false;
     if (bird.release()) {
         playWhoosh();
         hasEverLaunched = true;

@@ -46,6 +46,12 @@ class Bird extends BaseClass {
     return true;
   }
 
+  cancelDrag() {
+    if (!this.dragging) return;
+    this.dragging = false;
+    Matter.Body.setPosition(this.body, {x: this.anchorX, y: this.anchorY});
+  }
+
   removeFromWorld() {
     if (this.removed) return;
     this.removed = true;
