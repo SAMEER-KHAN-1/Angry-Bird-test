@@ -48,7 +48,10 @@ function preload() {
 function setup(){
     cnv = createCanvas(1200,400);
     frameRate(60);
-    engine = Engine.create();
+    engine = Engine.create({
+        positionIterations: 10,
+        velocityIterations: 8
+    });
     world = engine.world;
 
     Matter.Events.on(engine, 'collisionStart', handleCollisions);
