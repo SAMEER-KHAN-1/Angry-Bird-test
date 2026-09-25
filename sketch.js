@@ -5,9 +5,8 @@ const Bodies = Matter.Bodies;
 let engine, world;
 let cnv, restartButton;
 let backgroundImg, ground, platform;
-let box1, box2, box3, box4, box5;
-let pig1, pig3;
-let log1, log3, log4, log5;
+let currentLevel = 0;
+let levelObjects = [];
 let bird;
 let sprites = {};
 let pigs = [];
@@ -140,9 +139,17 @@ function playWhoosh(){
     whooshEnv.play(whooshNoise);
 }
 
+function createLevelObject(def){
+    if (def.type === 'box') return new Box(def.x, def.y, def.w, def.h);
+    if (def.type === 'log') return new Log(def.x, def.y, def.length, def.angle);
+    if (def.type === 'pig') return new Pig(def.x, def.y);
+    throw new Error("Unknown level object type: " + def.type);
+}
+
 function buildLevel(){
     World.clear(world, false);
-    birdsRemaining = 5;
+    var level = LEVELS[currentLevel];
+    birdsRemaining = level.birds;
     gameOver = false;
     score = 0;
     bonusAwarded = false;
@@ -153,24 +160,10 @@ function buildLevel(){
     ground = new Ground(600,height,1200,20,sprites.base);
     platform = new Ground(150, 310, 300, 170, sprites.ground);
 
-    box1 = new Box(700,320,70,70);
-    box2 = new Box(920,320,70,70);
-    pig1 = new Pig(810, 350);
-    log1 = new Log(810,260,300, PI/2);
-
-    box3 = new Box(700,240,70,70);
-    box4 = new Box(920,240,70,70);
-    pig3 = new Pig(810, 220);
-
-    log3 =  new Log(810,180,300, PI/2);
-
-    box5 = new Box(810,160,70,70);
-    log4 = new Log(760,120,150, PI/7);
-    log5 = new Log(870,120,150, -PI/7);
+    levelObjects = level.objects.map(createLevelObject);
+    pigs = levelObjects.filter(function(o){ return o instanceof Pig; });
 
     bird = new Bird(100,100);
-
-    pigs = [pig1, pig3];
 }
 
 function handleCollisions(event){
@@ -246,20 +239,10 @@ function draw(){
     background(backgroundImg);
     if (!paused) Engine.update(engine);
 
-    box1.display();
-    box2.display();
     ground.display();
-    pig1.display();
-    log1.display();
-
-    box3.display();
-    box4.display();
-    pig3.display();
-    log3.display();
-
-    box5.display();
-    log4.display();
-    log5.display();
+    for (var obj of levelObjects) {
+        obj.display();
+    }
 
     drawSlingshot();
     bird.display();
