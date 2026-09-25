@@ -1,3 +1,5 @@
+const WOOD_HEALTH = 100;
+
 const MATERIALS = {
     box:  { restitution: 0.2, friction: 0.6, density: 1.0 },
     log:  { restitution: 0.2, friction: 0.6, density: 0.8 },
@@ -19,9 +21,16 @@ class BaseClass{
         this.width = width;
         this.height = height;
         this.image = image;
+        this.alive = true;
         World.add(world, this.body);
       }
+      remove(){
+        if (!this.alive) return;
+        this.alive = false;
+        World.remove(world, this.body);
+      }
       display(){
+        if (!this.alive) return;
         var angle = this.body.angle;
         push();
         translate(this.body.position.x, this.body.position.y);

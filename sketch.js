@@ -17,6 +17,7 @@ let score = 0;
 let highScore = 0;
 let bonusAwarded = false;
 let hasEverLaunched = false;
+let shotFiredThisLevel = false;
 let muted = false;
 let newBest = false;
 let particles = [];
@@ -25,6 +26,9 @@ let paused = false;
 let pauseStartFrame = 0;
 const TOUCH_GRAB_RADIUS = 70;
 const PIG_KILL_IMPACT = 4;
+const WOOD_DAMAGE_THRESHOLD = 5;
+const WOOD_DAMAGE_FACTOR = 8;
+const POINTS_PER_BLOCK = 25;
 const POINTS_PER_PIG = 100;
 const POINTS_PER_LEFTOVER_BIRD = 50;
 
@@ -190,6 +194,7 @@ function buildLevel(){
     newBest = false;
     particles = [];
     starsEarned = 0;
+    shotFiredThisLevel = false;
 
     ground = new Ground(600,height,1200,20,sprites.base);
     platform = new Ground(150, 310, 300, 170, sprites.ground);
@@ -204,13 +209,29 @@ function handleCollisions(event){
     for (var pair of event.pairs) {
         var relVel = Matter.Vector.sub(pair.bodyA.velocity, pair.bodyB.velocity);
         var impact = Matter.Vector.magnitude(relVel);
-        if (hasEverLaunched && impact > THUD_IMPACT) {
+        if (!shotFiredThisLevel) continue;
+        if (impact > THUD_IMPACT) {
             playThud();
         }
         if (impact > PIG_KILL_IMPACT) {
             killIfPig(pair.bodyA);
             killIfPig(pair.bodyB);
         }
+        if (impact > WOOD_DAMAGE_THRESHOLD) {
+            damageBlock(pair.bodyA, impact);
+            damageBlock(pair.bodyB, impact);
+        }
+    }
+}
+
+function damageBlock(body, impact){
+    var block = levelObjects.find(function(o){ return o.body === body; });
+    if (!block || !block.breakable || !block.alive) return;
+    block.health -= (impact - WOOD_DAMAGE_THRESHOLD) * WOOD_DAMAGE_FACTOR;
+    if (block.health <= 0) {
+        spawnPopEffect(block.body.position.x, block.body.position.y, [181, 132, 76]);
+        block.remove();
+        addScore(POINTS_PER_BLOCK);
     }
 }
 
@@ -225,7 +246,7 @@ function killIfPig(body){
     }
 }
 
-function spawnPopEffect(x, y){
+function spawnPopEffect(x, y, color){
     for (var i = 0; i < 14; i++) {
         var angle = random(TWO_PI);
         var speed = random(1, 4);
@@ -235,6 +256,7 @@ function spawnPopEffect(x, y){
             vx: cos(angle) * speed,
             vy: sin(angle) * speed - 1,
             life: 30,
+            color: color || [140, 220, 90],
             size: random(4, 9)
         });
     }
@@ -254,7 +276,7 @@ function drawParticles(){
     push();
     noStroke();
     for (var pt of particles) {
-        fill(140, 220, 90, 255 * pt.life / 30);
+        fill(pt.color[0], pt.color[1], pt.color[2], 255 * pt.life / 30);
         ellipse(pt.x, pt.y, pt.size, pt.size);
     }
     pop();
@@ -481,6 +503,7 @@ function mouseReleased(){
     if (bird.release()) {
         playWhoosh();
         hasEverLaunched = true;
+        shotFiredThisLevel = true;
     }
 }
 
@@ -509,6 +532,7 @@ function touchEnded(event){
     if (bird.release()) {
         playWhoosh();
         hasEverLaunched = true;
+        shotFiredThisLevel = true;
     }
     return false;
 }
