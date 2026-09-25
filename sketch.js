@@ -265,6 +265,19 @@ function damageBlock(body, impact){
     }
 }
 
+function cullOffscreenObjects(){
+    for (var obj of levelObjects) {
+        if (!obj.alive) continue;
+        var p = obj.body.position;
+        if (p.x > -100 && p.x < width + 100 && p.y < height + 100) continue;
+        obj.remove();
+        if (obj instanceof Pig) {
+            playPop();
+            addScore(POINTS_PER_PIG);
+        }
+    }
+}
+
 function killIfPig(body){
     for (var p of pigs) {
         if (p.body === body && p.alive) {
@@ -365,7 +378,10 @@ function draw(){
     drawParticles();
     drawPopups();
 
-    if (!paused) checkBirdStatus();
+    if (!paused) {
+        cullOffscreenObjects();
+        checkBirdStatus();
+    }
     drawHUD();
     drawHint();
     if (paused) drawPauseOverlay();
