@@ -1,6 +1,6 @@
 class Bird extends BaseClass {
   constructor(x,y){
-    super(x, y, 50, 50, sprites.bird);
+    super(x, y, 50, 50, sprites.bird, undefined, MATERIALS.bird);
     this.anchorX = x;
     this.anchorY = y;
     this.maxStretch = 90;

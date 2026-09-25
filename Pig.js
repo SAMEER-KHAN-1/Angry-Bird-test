@@ -1,6 +1,6 @@
 class Pig extends BaseClass {
   constructor(x, y){
-    super(x, y, 50, 50, sprites.enemy);
+    super(x, y, 50, 50, sprites.enemy, undefined, MATERIALS.pig);
     this.alive = true;
   }
 

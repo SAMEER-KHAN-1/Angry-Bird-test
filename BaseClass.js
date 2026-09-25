@@ -1,10 +1,17 @@
+const MATERIALS = {
+    box:  { restitution: 0.2, friction: 0.6, density: 1.0 },
+    log:  { restitution: 0.2, friction: 0.6, density: 0.8 },
+    pig:  { restitution: 0.3, friction: 0.6, density: 0.8 },
+    bird: { restitution: 0.4, friction: 0.8, density: 2.0 }
+};
+
 class BaseClass{
-    constructor(x, y, width, height, image, angle) {
-        var options = {
-            'restitution':0.8,
-            'friction':1.0,
-            'density':1.0
-        }
+    constructor(x, y, width, height, image, angle, material) {
+        var options = Object.assign({
+            restitution: 0.8,
+            friction: 1.0,
+            density: 1.0
+        }, material);
         if (angle !== undefined) {
             options.angle = angle;
         }
