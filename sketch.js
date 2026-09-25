@@ -81,7 +81,6 @@ function setup(){
     thudOsc.start();
     thudOsc.freq(90);
 
-    highScore = Number(loadSetting('highScore')) || 0;
     muted = loadSetting('muted') === 'true';
     masterVolume(muted ? 0 : 1);
 
@@ -140,6 +139,18 @@ function playWhoosh(){
     whooshEnv.play(whooshNoise);
 }
 
+function highScoreKey(){
+    return 'highScore_level' + (currentLevel + 1);
+}
+
+function loadHighScore(){
+    var saved = loadSetting(highScoreKey());
+    if (saved === null && currentLevel === 0) {
+        saved = loadSetting('highScore');
+    }
+    return Number(saved) || 0;
+}
+
 function hasNextLevel(){
     return currentLevel < LEVELS.length - 1;
 }
@@ -169,6 +180,7 @@ function buildLevel(){
     World.clear(world, false);
     var level = LEVELS[currentLevel];
     birdsRemaining = level.birds;
+    highScore = loadHighScore();
     gameOver = false;
     score = 0;
     bonusAwarded = false;
@@ -250,7 +262,7 @@ function addScore(points){
     if (score > highScore) {
         if (highScore > 0) newBest = true;
         highScore = score;
-        saveSetting('highScore', highScore);
+        saveSetting(highScoreKey(), highScore);
     }
 }
 
