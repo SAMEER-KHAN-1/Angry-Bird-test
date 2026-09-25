@@ -10,7 +10,7 @@ Open `index.html` in a browser (or serve the folder with any static server).
 - Once the bird is in the air, click or tap once to boost its speed. Each bird can boost once.
 - Knock pigs with enough impact to destroy them. Wooden boxes and logs take damage from hard hits and break apart for bonus points.
 - Clear all pigs before you run out of birds. Each bird you didn't need scores bonus points and earns stars: 3 stars for 3 or more spare birds, 2 for one or two, 1 otherwise.
-- There are 3 levels. Clearing a level unlocks the next one. Your best score and best stars are saved per level, and the game resumes at your furthest unlocked level.
+- There are 4 levels. Clearing a level unlocks the next one. Your best score and best stars are saved per level, and the game resumes at your furthest unlocked level.
 
 ## Controls
 
