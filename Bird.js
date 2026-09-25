@@ -8,6 +8,8 @@ class Bird extends BaseClass {
     this.dragging = false;
     this.launched = false;
     this.removed = false;
+    this.boostFactor = 1.5;
+    this.boostUsed = false;
     this.trail = [];
     Matter.Body.setStatic(this.body, true);
   }
@@ -44,6 +46,18 @@ class Bird extends BaseClass {
     var vx = (this.anchorX - pos.x) * this.launchPower;
     var vy = (this.anchorY - pos.y) * this.launchPower;
     Matter.Body.setVelocity(this.body, {x: vx, y: vy});
+    return true;
+  }
+
+  canBoost() {
+    return this.launched && !this.removed && !this.boostUsed && !this.body.isStatic;
+  }
+
+  useBoost() {
+    if (!this.canBoost()) return false;
+    this.boostUsed = true;
+    var v = this.body.velocity;
+    Matter.Body.setVelocity(this.body, {x: v.x * this.boostFactor, y: v.y * this.boostFactor});
     return true;
   }
 

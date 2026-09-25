@@ -342,6 +342,17 @@ function drawPauseOverlay(){
 }
 
 function drawHint(){
+    if (bird.canBoost() && !paused) {
+        push();
+        stroke(0, 180);
+        strokeWeight(3);
+        fill(255, 215, 0);
+        textSize(18);
+        textAlign(CENTER, TOP);
+        text("Tap or click to boost!", width / 2, 15);
+        pop();
+        return;
+    }
     if (hasEverLaunched) return;
     push();
     stroke(0, 180);
@@ -487,10 +498,19 @@ function keyPressed(){
     }
 }
 
+function tryBoost(){
+    if (!bird.useBoost()) return;
+    playWhoosh();
+    spawnPopEffect(bird.body.position.x, bird.body.position.y, [255, 255, 255]);
+}
+
 function mousePressed(){
     unlockAudio();
     if (paused) return;
+    var onCanvas = mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
+    if (!onCanvas) return;
     bird.tryGrab(mouseX, mouseY);
+    tryBoost();
 }
 
 function mouseDragged(){
@@ -516,6 +536,7 @@ function touchStarted(event){
     if (!touchedCanvas(event)) return true;
     if (paused) return false;
     bird.tryGrab(mouseX, mouseY, TOUCH_GRAB_RADIUS);
+    tryBoost();
     return false;
 }
 
