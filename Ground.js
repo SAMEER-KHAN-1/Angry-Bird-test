@@ -1,7 +1,10 @@
 class Ground {
     constructor(x,y,width,height,image) {
       var options = {
-          isStatic: true
+          isStatic: true,
+          friction: 0.8,
+          frictionStatic: 1.0,
+          restitution: 0
       }
       this.body = Bodies.rectangle(x,y,width,height,options);
       this.width = width;
