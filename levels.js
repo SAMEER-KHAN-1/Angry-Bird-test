@@ -53,7 +53,7 @@ const LEVELS = [
     },
     {
         name: "Level 4",
-        birds: 6,
+        birds: 4,
         objects: [
             { type: 'pig', x: 640, y: 365 },
 
