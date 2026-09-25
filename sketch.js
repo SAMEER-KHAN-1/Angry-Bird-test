@@ -7,6 +7,8 @@ let cnv, restartButton;
 let restartButtonLabel = '';
 let backgroundImg, ground, platform;
 let currentLevel = 0;
+let unlockedLevel = 0;
+let currentBestStars = 0;
 let levelObjects = [];
 let bird;
 let sprites = {};
@@ -91,6 +93,9 @@ function setup(){
     muted = loadSetting('muted') === 'true';
     masterVolume(muted ? 0 : 1);
 
+    unlockedLevel = constrain(Number(loadSetting('unlockedLevel')) || 0, 0, LEVELS.length - 1);
+    currentLevel = unlockedLevel;
+
     buildLevel();
 }
 
@@ -158,6 +163,28 @@ function loadHighScore(){
     return Number(saved) || 0;
 }
 
+function bestStarsFor(levelIndex){
+    return Number(loadSetting('stars_level' + (levelIndex + 1))) || 0;
+}
+
+function recordProgress(){
+    if (starsEarned > currentBestStars) {
+        currentBestStars = starsEarned;
+        saveSetting('stars_level' + (currentLevel + 1), starsEarned);
+    }
+    if (hasNextLevel() && currentLevel + 1 > unlockedLevel) {
+        unlockedLevel = currentLevel + 1;
+        saveSetting('unlockedLevel', unlockedLevel);
+    }
+}
+
+function selectLevel(levelIndex){
+    if (levelIndex < 0 || levelIndex >= LEVELS.length) return;
+    if (levelIndex > unlockedLevel || levelIndex === currentLevel) return;
+    currentLevel = levelIndex;
+    buildLevel();
+}
+
 function hasNextLevel(){
     return currentLevel < LEVELS.length - 1;
 }
@@ -188,6 +215,7 @@ function buildLevel(){
     var level = LEVELS[currentLevel];
     birdsRemaining = level.birds;
     highScore = loadHighScore();
+    currentBestStars = bestStarsFor(currentLevel);
     gameOver = false;
     score = 0;
     bonusAwarded = false;
@@ -371,6 +399,7 @@ function checkBirdStatus(){
             var unused = unusedBirds();
             starsEarned = unused >= 3 ? 3 : (unused >= 1 ? 2 : 1);
             addScore(unused * POINTS_PER_LEFTOVER_BIRD);
+            recordProgress();
             if (bird.launched && !bird.removed) {
                 Matter.Body.setStatic(bird.body, true);
             }
@@ -421,6 +450,13 @@ function drawHUD(){
     text("Sound: " + (muted ? "off" : "on") + " (M)", width - 20, 15);
     text("Pause (P)", width - 20, 40);
     text("Level " + (currentLevel + 1) + " / " + LEVELS.length, width - 20, 65);
+    strokeWeight(2);
+    for (var b = 0; b < 3; b++) {
+        fill(b < currentBestStars ? color(255, 215, 0) : color(90));
+        drawStar(width - 31 - (2 - b) * 26, 104, 5, 12);
+    }
+    strokeWeight(3);
+    fill(255);
     textAlign(LEFT, TOP);
     if (pigsRemaining() === 0) {
         for (var s = 0; s < 3; s++) {
@@ -489,6 +525,9 @@ function keyPressed(){
     }
     if ((key === 'n' || key === 'N') && pigsRemaining() === 0) {
         advanceLevel();
+    }
+    if (!paused && key >= '1' && key <= '9') {
+        selectLevel(Number(key) - 1);
     }
     if (key === 'm' || key === 'M') {
         toggleMute();
