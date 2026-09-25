@@ -3,8 +3,8 @@ const WOOD_HEALTH = 100;
 const MATERIALS = {
     box:  { restitution: 0.2, friction: 0.6, density: 1.0 },
     log:  { restitution: 0.2, friction: 0.6, density: 0.8 },
-    pig:  { restitution: 0.3, friction: 0.6, density: 0.8 },
-    bird: { restitution: 0.4, friction: 0.8, density: 2.0 }
+    pig:  { restitution: 0.3, friction: 0.6, density: 0.8, shape: 'circle' },
+    bird: { restitution: 0.4, friction: 0.8, density: 2.0, shape: 'circle' }
 };
 
 class BaseClass{
@@ -17,7 +17,11 @@ class BaseClass{
         if (angle !== undefined) {
             options.angle = angle;
         }
-        this.body = Bodies.rectangle(x, y, width, height, options);
+        var isCircle = options.shape === 'circle';
+        delete options.shape;
+        this.body = isCircle
+            ? Bodies.circle(x, y, width / 2, options, 24)
+            : Bodies.rectangle(x, y, width, height, options);
         this.width = width;
         this.height = height;
         this.image = image;
