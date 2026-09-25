@@ -23,6 +23,7 @@ let shotFiredThisLevel = false;
 let muted = false;
 let newBest = false;
 let particles = [];
+let popups = [];
 let starsEarned = 0;
 let paused = false;
 let pauseStartFrame = 0;
@@ -221,6 +222,7 @@ function buildLevel(){
     bonusAwarded = false;
     newBest = false;
     particles = [];
+    popups = [];
     starsEarned = 0;
     shotFiredThisLevel = false;
 
@@ -259,7 +261,7 @@ function damageBlock(body, impact){
     if (block.health <= 0) {
         spawnPopEffect(block.body.position.x, block.body.position.y, [181, 132, 76]);
         block.remove();
-        addScore(POINTS_PER_BLOCK);
+        addScore(POINTS_PER_BLOCK, block.body.position.x, block.body.position.y);
     }
 }
 
@@ -269,7 +271,7 @@ function killIfPig(body){
             spawnPopEffect(p.body.position.x, p.body.position.y);
             p.remove();
             playPop();
-            addScore(POINTS_PER_PIG);
+            addScore(POINTS_PER_PIG, p.body.position.x, p.body.position.y);
         }
     }
 }
@@ -310,7 +312,31 @@ function drawParticles(){
     pop();
 }
 
-function addScore(points){
+function updatePopups(){
+    for (var pu of popups) {
+        pu.y -= 0.8;
+        pu.life--;
+    }
+    popups = popups.filter(function(pu){ return pu.life > 0; });
+}
+
+function drawPopups(){
+    push();
+    stroke(0, 180);
+    strokeWeight(3);
+    textSize(22);
+    textAlign(CENTER, CENTER);
+    for (var pu of popups) {
+        fill(255, 215, 0, 255 * pu.life / 45);
+        text("+" + pu.points, pu.x, pu.y);
+    }
+    pop();
+}
+
+function addScore(points, x, y){
+    if (x !== undefined) {
+        popups.push({ x: x, y: y, points: points, life: 45 });
+    }
     score += points;
     if (score > highScore) {
         if (highScore > 0) newBest = true;
@@ -332,8 +358,12 @@ function draw(){
     bird.display();
     platform.display();
 
-    if (!paused) updateParticles();
+    if (!paused) {
+        updateParticles();
+        updatePopups();
+    }
     drawParticles();
+    drawPopups();
 
     if (!paused) checkBirdStatus();
     drawHUD();
