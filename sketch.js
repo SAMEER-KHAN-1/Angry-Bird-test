@@ -25,10 +25,13 @@ let newBest = false;
 let particles = [];
 let popups = [];
 let starsEarned = 0;
+let shakeAmount = 0;
 let paused = false;
 let pauseStartFrame = 0;
 const TOUCH_GRAB_RADIUS = 70;
 const PIG_KILL_IMPACT = 4;
+const SHAKE_IMPACT = 9;
+const MAX_SHAKE = 8;
 const WOOD_DAMAGE_THRESHOLD = 5;
 const WOOD_DAMAGE_FACTOR = 8;
 const POINTS_PER_BLOCK = 25;
@@ -223,6 +226,7 @@ function buildLevel(){
     newBest = false;
     particles = [];
     popups = [];
+    shakeAmount = 0;
     starsEarned = 0;
     shotFiredThisLevel = false;
 
@@ -242,6 +246,9 @@ function handleCollisions(event){
         if (!shotFiredThisLevel) continue;
         if (impact > THUD_IMPACT) {
             playThud();
+        }
+        if (impact > SHAKE_IMPACT) {
+            shakeAmount = Math.max(shakeAmount, Math.min(impact * 0.5, MAX_SHAKE));
         }
         if (impact > PIG_KILL_IMPACT) {
             killIfPig(pair.bodyA);
@@ -362,6 +369,16 @@ function draw(){
     background(backgroundImg);
     if (!paused) Engine.update(engine);
 
+    push();
+    if (!paused) {
+        if (shakeAmount > 0.3) {
+            translate(random(-shakeAmount, shakeAmount), random(-shakeAmount, shakeAmount));
+            shakeAmount *= 0.9;
+        } else {
+            shakeAmount = 0;
+        }
+    }
+
     ground.display();
     for (var obj of levelObjects) {
         obj.display();
@@ -377,6 +394,7 @@ function draw(){
     }
     drawParticles();
     drawPopups();
+    pop();
 
     if (!paused) {
         cullOffscreenObjects();
