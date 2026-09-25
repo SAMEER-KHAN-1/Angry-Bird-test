@@ -4,6 +4,7 @@ const Bodies = Matter.Bodies;
 
 let engine, world;
 let cnv, restartButton;
+let restartButtonLabel = '';
 let backgroundImg, ground, platform;
 let currentLevel = 0;
 let levelObjects = [];
@@ -54,7 +55,7 @@ function setup(){
 
     restartButton = createButton('Restart');
     restartButton.class('restart-btn');
-    restartButton.mousePressed(buildLevel);
+    restartButton.mousePressed(onRestartButton);
     restartButton.hide();
 
     popOsc = new p5.Oscillator('sine');
@@ -137,6 +138,24 @@ function playThud(){
 
 function playWhoosh(){
     whooshEnv.play(whooshNoise);
+}
+
+function hasNextLevel(){
+    return currentLevel < LEVELS.length - 1;
+}
+
+function advanceLevel(){
+    if (!hasNextLevel()) return;
+    currentLevel++;
+    buildLevel();
+}
+
+function onRestartButton(){
+    if (pigsRemaining() === 0 && hasNextLevel()) {
+        advanceLevel();
+    } else {
+        buildLevel();
+    }
 }
 
 function createLevelObject(def){
@@ -353,6 +372,7 @@ function drawHUD(){
     textAlign(RIGHT, TOP);
     text("Sound: " + (muted ? "off" : "on") + " (M)", width - 20, 15);
     text("Pause (P)", width - 20, 40);
+    text("Level " + (currentLevel + 1) + " / " + LEVELS.length, width - 20, 65);
     textAlign(LEFT, TOP);
     if (pigsRemaining() === 0) {
         for (var s = 0; s < 3; s++) {
@@ -366,11 +386,11 @@ function drawHUD(){
         textAlign(CENTER, CENTER);
         textSize(48);
         fill(255, 215, 0);
-        text("LEVEL CLEARED!", width / 2, height / 2);
+        text(hasNextLevel() ? "LEVEL CLEARED!" : "ALL LEVELS CLEARED!", width / 2, height / 2);
         textSize(20);
         fill(255);
-        text("Press R or tap Restart", width / 2, height / 2 + 40);
-        updateRestartButton(true);
+        text(hasNextLevel() ? "Press N for the next level, R to retry" : "Press R to play this level again", width / 2, height / 2 + 40);
+        updateRestartButton(true, hasNextLevel() ? "Next Level" : "Replay");
     } else if (gameOver) {
         textAlign(CENTER, CENTER);
         textSize(48);
@@ -378,8 +398,8 @@ function drawHUD(){
         text("GAME OVER", width / 2, height / 2);
         textSize(20);
         fill(255);
-        text("Press R or tap Restart", width / 2, height / 2 + 40);
-        updateRestartButton(true);
+        text("Press R or tap Retry", width / 2, height / 2 + 40);
+        updateRestartButton(true, "Retry");
     } else {
         updateRestartButton(false);
     }
@@ -396,15 +416,19 @@ function drawStar(cx, cy, innerRadius, outerRadius){
     endShape(CLOSE);
 }
 
-function updateRestartButton(show){
+function updateRestartButton(show, label){
     if (!show) {
         restartButton.hide();
         return;
     }
+    if (restartButtonLabel !== label) {
+        restartButtonLabel = label;
+        restartButton.html(label);
+    }
     var rect = cnv.elt.getBoundingClientRect();
     var scale = rect.width / width;
     restartButton.position(
-        rect.left + window.pageXOffset + rect.width / 2 - 45,
+        rect.left + window.pageXOffset + rect.width / 2 - 55,
         rect.top + window.pageYOffset + (height / 2 + 55) * scale
     );
     restartButton.show();
@@ -414,6 +438,9 @@ function keyPressed(){
     unlockAudio();
     if ((key === 'r' || key === 'R') && (gameOver || pigsRemaining() === 0)) {
         buildLevel();
+    }
+    if ((key === 'n' || key === 'N') && pigsRemaining() === 0) {
+        advanceLevel();
     }
     if (key === 'm' || key === 'M') {
         toggleMute();

@@ -22,6 +22,7 @@ canvas {
 }
 
 .restart-btn {
+  min-width: 110px;
   padding: 8px 18px;
   font-size: 16px;
   border: none;
