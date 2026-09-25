@@ -45,11 +45,10 @@ const LEVELS = [
             { type: 'box', x: 820, y: 355, w: 70, h: 70 },
             { type: 'pig', x: 820, y: 295 },
 
+            { type: 'log', x: 880, y: 300, length: 180, angle: 0 },
             { type: 'log', x: 960, y: 300, length: 180, angle: 0 },
-            { type: 'log', x: 1040, y: 300, length: 180, angle: 0 },
-            { type: 'pig', x: 1000, y: 365 },
-            { type: 'log', x: 1000, y: 200, length: 120, angle: Math.PI / 2 },
-            { type: 'pig', x: 1000, y: 165 }
+            { type: 'log', x: 920, y: 200, length: 120, angle: Math.PI / 2 },
+            { type: 'pig', x: 920, y: 165 }
         ]
     },
     {
