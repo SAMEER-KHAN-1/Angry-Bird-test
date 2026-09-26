@@ -18,8 +18,8 @@ Open `index.html` in a browser (or serve the folder with any static server).
 | --- | --- |
 | Drag and release (mouse or touch) | Aim and launch the bird |
 | Click or tap while the bird is flying | Boost (once per bird) |
-| `P` | Pause or resume |
-| `M` | Mute or unmute sound (saved between visits) |
+| `P` or the "Pause" label | Pause or resume (tap the screen to resume) |
+| `M` or the "Sound" label | Mute or unmute sound (saved between visits) |
 | `R` or the on-screen button | Retry after the round ends, win or lose |
 | `N` or the on-screen button | Next level after a win |
 | `1` to `9` | Jump to an unlocked level (restarts it) |

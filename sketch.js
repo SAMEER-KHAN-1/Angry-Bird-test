@@ -610,6 +610,18 @@ function keyPressed(){
     }
 }
 
+// The top-right HUD labels double as buttons so mute and pause work
+// without a keyboard.
+function handleHudTap(x, y){
+    if (x < width - 200 || y < 10 || y > 62) return false;
+    if (y < 37) {
+        toggleMute();
+    } else {
+        togglePause();
+    }
+    return true;
+}
+
 function tryBoost(){
     if (!bird.useBoost()) return;
     playWhoosh();
@@ -627,6 +639,7 @@ function mousePressed(event){
     }
     var onCanvas = mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
     if (!onCanvas) return;
+    if (handleHudTap(mouseX, mouseY)) return;
     bird.tryGrab(mouseX, mouseY);
     tryBoost();
 }
@@ -656,6 +669,7 @@ function touchStarted(event){
         togglePause();
         return false;
     }
+    if (handleHudTap(mouseX, mouseY)) return false;
     bird.tryGrab(mouseX, mouseY, TOUCH_GRAB_RADIUS);
     tryBoost();
     return false;
