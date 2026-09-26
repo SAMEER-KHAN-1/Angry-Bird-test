@@ -615,7 +615,7 @@ function updateRestartButton(show, label){
 
 function keyPressed(){
     unlockAudio();
-    if ((key === 'r' || key === 'R') && (gameOver || pigsRemaining() === 0)) {
+    if ((key === 'r' || key === 'R') && !paused) {
         buildLevel();
     }
     if ((key === 'n' || key === 'N') && pigsRemaining() === 0) {

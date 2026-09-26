@@ -22,7 +22,8 @@ Open `index.html` in a browser (or serve the folder with any static server).
 | Click or tap while the bird is flying | Boost (once per bird) |
 | `P` or the "Pause" label | Pause or resume (tap the screen to resume) |
 | `M` or the "Sound" label | Mute or unmute sound (saved between visits) |
-| `R` or the on-screen button | Retry after the round ends, win or lose |
+| `R` | Restart the current level at any time |
+| On-screen button | Retry or continue after the round ends |
 | `N` or the on-screen button | Next level after a win |
 | `1` to `9` | Jump to an unlocked level (restarts it) |
 
