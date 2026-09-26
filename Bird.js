@@ -8,6 +8,7 @@ class Bird extends BaseClass {
     this.dragging = false;
     this.launched = false;
     this.removed = false;
+    this.launchFrame = 0;
     this.boostFactor = 1.5;
     this.boostUsed = false;
     this.trail = [];

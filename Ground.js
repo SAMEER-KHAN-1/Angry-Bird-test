@@ -14,13 +14,15 @@ class Ground {
     }
     display(){
       var pos = this.body.position;
+      push();
       if (this.image) {
         imageMode(CENTER);
         image(this.image, pos.x, pos.y, this.width, this.height);
-        return;
+      } else {
+        rectMode(CENTER);
+        fill("brown");
+        rect(pos.x, pos.y, this.width, this.height);
       }
-      rectMode(CENTER);
-      fill("brown");
-      rect(pos.x, pos.y, this.width, this.height);
+      pop();
     }
-  };
+}
