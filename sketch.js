@@ -438,7 +438,7 @@ function drawPauseOverlay(){
     textSize(48);
     text("PAUSED", width / 2, height / 2);
     textSize(20);
-    text("Press P to resume", width / 2, height / 2 + 40);
+    text("Press P or tap to resume", width / 2, height / 2 + 40);
     pop();
 }
 
@@ -618,10 +618,13 @@ function tryBoost(){
 
 function mousePressed(event){
     unlockAudio();
-    if (paused) return;
     // The restart button sits on top of the canvas; its clicks must not
     // also grab or boost the bird underneath.
     if (!touchedCanvas(event)) return;
+    if (paused) {
+        togglePause();
+        return;
+    }
     var onCanvas = mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
     if (!onCanvas) return;
     bird.tryGrab(mouseX, mouseY);
@@ -649,7 +652,10 @@ function touchedCanvas(event){
 function touchStarted(event){
     unlockAudio();
     if (!touchedCanvas(event)) return true;
-    if (paused) return false;
+    if (paused) {
+        togglePause();
+        return false;
+    }
     bird.tryGrab(mouseX, mouseY, TOUCH_GRAB_RADIUS);
     tryBoost();
     return false;
