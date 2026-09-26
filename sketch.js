@@ -544,7 +544,7 @@ function drawHUD(){
     textAlign(RIGHT, TOP);
     text("Sound: " + (muted ? "off" : "on") + " (M)", width - 20, 15);
     text("Pause (P)", width - 20, 40);
-    text("Level " + (currentLevel + 1) + " / " + LEVELS.length, width - 20, 65);
+    text(LEVELS[currentLevel].name + " / " + LEVELS.length, width - 20, 65);
     strokeWeight(2);
     for (var b = 0; b < 3; b++) {
         fill(b < currentBestStars ? color(255, 215, 0) : color(90));
