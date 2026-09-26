@@ -15,6 +15,10 @@ let sprites = {};
 let pigs = [];
 let birdsRemaining = 5;
 let gameOver = false;
+let outOfBirds = false;
+let settleFrames = 0;
+const SETTLE_SPEED = 0.15;
+const MAX_SETTLE_FRAMES = 180;
 let score = 0;
 let highScore = 0;
 let bonusAwarded = false;
@@ -230,6 +234,8 @@ function buildLevel(){
     highScore = loadHighScore();
     currentBestStars = bestStarsFor(currentLevel);
     gameOver = false;
+    outOfBirds = false;
+    settleFrames = 0;
     score = 0;
     bonusAwarded = false;
     newBest = false;
@@ -480,18 +486,34 @@ function checkBirdStatus(){
         return;
     }
     if (gameOver) return;
+    if (outOfBirds) {
+        // Let a collapsing structure finish falling before declaring defeat,
+        // since the last blocks may still crush the remaining pigs.
+        settleFrames++;
+        if (worldSettled() || settleFrames > MAX_SETTLE_FRAMES) {
+            gameOver = true;
+        }
+        return;
+    }
     if (bird.launched && (bird.isOffscreen() || bird.isResting())) {
         bird.removeFromWorld();
         birdsRemaining--;
         if (birdsRemaining > 0) {
             bird = new Bird(100, 100);
         } else {
-            gameOver = true;
+            outOfBirds = true;
         }
     }
 }
 
+function worldSettled(){
+    return levelObjects.every(function(o){
+        return !o.alive || Matter.Vector.magnitude(o.body.velocity) < SETTLE_SPEED;
+    });
+}
+
 function unusedBirds(){
+    if (bird.removed) return birdsRemaining;
     return birdsRemaining - (bird.launched ? 1 : 0);
 }
 
