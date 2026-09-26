@@ -133,6 +133,25 @@ function saveSetting(key, value){
     } catch (e) {}
 }
 
+function removeSetting(key){
+    try {
+        window.localStorage.removeItem(key);
+    } catch (e) {}
+}
+
+function resetProgress(){
+    if (!window.confirm('Reset all saved progress (unlocked levels, stars and best scores)?')) return;
+    removeSetting('unlockedLevel');
+    removeSetting('highScore');
+    for (var i = 1; i <= LEVELS.length; i++) {
+        removeSetting('stars_level' + i);
+        removeSetting('highScore_level' + i);
+    }
+    unlockedLevel = 0;
+    currentLevel = 0;
+    buildLevel();
+}
+
 function unlockAudio(){
     var ctx = getAudioContext();
     if (ctx.state === 'suspended') {
@@ -636,6 +655,9 @@ function keyPressed(){
     }
     if (!paused && key >= '1' && key <= '9') {
         selectLevel(Number(key) - 1);
+    }
+    if ((key === 'x' || key === 'X') && !paused) {
+        resetProgress();
     }
     if (key === 'm' || key === 'M') {
         toggleMute();

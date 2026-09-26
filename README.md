@@ -25,6 +25,7 @@ Open `index.html` in a browser (or serve the folder with any static server).
 | `R` | Restart the current level at any time |
 | On-screen button | Retry or continue after the round ends |
 | `N` or the on-screen button | Next level after a win |
+| `X` | Reset all saved progress (asks to confirm first) |
 | `1` to `9` | Jump to an unlocked level (restarts it) |
 
 ## Adding a level
