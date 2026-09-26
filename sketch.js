@@ -193,7 +193,7 @@ function recordProgress(){
 
 function selectLevel(levelIndex){
     if (levelIndex < 0 || levelIndex >= LEVELS.length) return;
-    if (levelIndex > unlockedLevel || levelIndex === currentLevel) return;
+    if (levelIndex > unlockedLevel) return;
     currentLevel = levelIndex;
     buildLevel();
 }
