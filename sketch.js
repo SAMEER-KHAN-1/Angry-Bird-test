@@ -101,6 +101,15 @@ function setup(){
     currentLevel = unlockedLevel;
 
     buildLevel();
+
+    window.addEventListener('blur', autoPause);
+    document.addEventListener('visibilitychange', function(){
+        if (document.hidden) autoPause();
+    });
+}
+
+function autoPause(){
+    if (!paused) togglePause();
 }
 
 function loadSetting(key){
@@ -607,9 +616,12 @@ function tryBoost(){
     spawnPopEffect(bird.body.position.x, bird.body.position.y, [255, 255, 255]);
 }
 
-function mousePressed(){
+function mousePressed(event){
     unlockAudio();
     if (paused) return;
+    // The restart button sits on top of the canvas; its clicks must not
+    // also grab or boost the bird underneath.
+    if (!touchedCanvas(event)) return;
     var onCanvas = mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
     if (!onCanvas) return;
     bird.tryGrab(mouseX, mouseY);
