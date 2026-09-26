@@ -12,7 +12,7 @@ Open `index.html` in a browser (or serve the folder with any static server).
 - Clear all pigs before you run out of birds. Each bird you didn't need scores bonus points and earns stars: 3 stars for 3 or more spare birds, 2 for one or two, 1 otherwise.
 - After your last bird lands, the game waits a moment for the structure to stop moving before it declares defeat, so a collapse can still finish off the last pigs.
 - The game pauses on its own when you switch tabs or windows, and a click or tap resumes it.
-- There are 4 levels. Clearing a level unlocks the next one. Your best score and best stars are saved per level, and the game resumes at your furthest unlocked level.
+- There are 5 levels. Clearing a level unlocks the next one. Your best score and best stars are saved per level, and the game resumes at your furthest unlocked level.
 
 ## Controls
 

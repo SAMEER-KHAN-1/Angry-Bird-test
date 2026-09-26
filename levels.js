@@ -71,5 +71,25 @@ const LEVELS = [
             { type: 'log', x: 1000, y: 280, length: 120, angle: Math.PI / 2 },
             { type: 'pig', x: 1000, y: 245 }
         ]
+    },
+    {
+        name: "Level 5",
+        birds: 5,
+        objects: [
+            { type: 'log', x: 720, y: 340, length: 100, angle: 0 },
+            { type: 'log', x: 900, y: 340, length: 100, angle: 0 },
+            { type: 'pig', x: 810, y: 365 },
+            { type: 'log', x: 810, y: 280, length: 240, angle: Math.PI / 2 },
+
+            { type: 'log', x: 740, y: 220, length: 100, angle: 0 },
+            { type: 'log', x: 880, y: 220, length: 100, angle: 0 },
+            { type: 'pig', x: 810, y: 245 },
+            { type: 'log', x: 810, y: 160, length: 200, angle: Math.PI / 2 },
+            { type: 'pig', x: 810, y: 125 },
+
+            { type: 'box', x: 1010, y: 355, w: 70, h: 70 },
+            { type: 'box', x: 1010, y: 285, w: 70, h: 70 },
+            { type: 'pig', x: 1090, y: 365 }
+        ]
     }
 ];
