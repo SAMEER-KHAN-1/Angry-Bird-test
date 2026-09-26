@@ -61,6 +61,8 @@ function preload() {
 
 function setup(){
     cnv = createCanvas(1200,400);
+    cnv.elt.setAttribute('role', 'img');
+    cnv.elt.setAttribute('aria-label', 'Angry Birds game: drag the bird back and release to launch it at the pigs.');
     frameRate(60);
     engine = Engine.create({
         positionIterations: 10,
