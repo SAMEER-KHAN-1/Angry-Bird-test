@@ -9,6 +9,7 @@ let backgroundImg, ground, platform;
 let currentLevel = 0;
 let unlockedLevel = 0;
 let currentBestStars = 0;
+let totalStars = 0;
 let levelObjects = [];
 let bird;
 let sprites = {};
@@ -186,10 +187,18 @@ function bestStarsFor(levelIndex){
     return Number(loadSetting('stars_level' + (levelIndex + 1))) || 0;
 }
 
+function refreshTotalStars(){
+    totalStars = 0;
+    for (var i = 0; i < LEVELS.length; i++) {
+        totalStars += bestStarsFor(i);
+    }
+}
+
 function recordProgress(){
     if (starsEarned > currentBestStars) {
         currentBestStars = starsEarned;
         saveSetting('stars_level' + (currentLevel + 1), starsEarned);
+        refreshTotalStars();
     }
     if (hasNextLevel() && currentLevel + 1 > unlockedLevel) {
         unlockedLevel = currentLevel + 1;
@@ -235,6 +244,7 @@ function buildLevel(){
     birdsRemaining = level.birds;
     highScore = loadHighScore();
     currentBestStars = bestStarsFor(currentLevel);
+    refreshTotalStars();
     gameOver = false;
     outOfBirds = false;
     settleFrames = 0;
@@ -571,6 +581,7 @@ function drawHUD(){
         textSize(20);
         fill(255);
         text(hasNextLevel() ? "Press N for the next level, R to retry" : "Press R to play this level again", width / 2, height / 2 + 40);
+        text("Total stars: " + totalStars + " / " + LEVELS.length * 3, width / 2, height / 2 + 100);
         updateRestartButton(true, hasNextLevel() ? "Next Level" : "Replay");
     } else if (gameOver) {
         textAlign(CENTER, CENTER);
